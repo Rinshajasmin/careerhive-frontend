@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Button from "../common/Button";
+import Logo from "../common/Logo";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -17,12 +18,7 @@ const Navbar = () => {
         
       <div className="max-w-7xl mx-auto h-20 px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
-        <h1 className="text-3xl font-bold tracking-tight cursor-pointer select-none">
-          <span className="text-gray-900">Career</span>
-          <span className="gradient-text">
-            Hive
-          </span>
-        </h1>
+       <Logo/>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-10">

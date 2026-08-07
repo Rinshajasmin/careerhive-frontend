@@ -7,3 +7,11 @@
    bg-clip-text
    text-transparent;
 }
+.gradient-hover {
+  @apply transition-all duration-300
+    hover:bg-gradient-to-r
+    hover:from-[#FF7A18]
+    hover:to-[#FF4D00]
+    hover:bg-clip-text
+    hover:text-transparent;
+}
