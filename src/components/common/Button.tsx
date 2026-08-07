@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
-
 interface ButtonProps {
   children: ReactNode;
   variant?: "primary" | "outline";
   className?: string;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
 const Button = ({
@@ -13,6 +13,7 @@ const Button = ({
   variant = "primary",
   className = "",
   onClick,
+  type = "button",
 }: ButtonProps) => {
   const baseStyles =
     "px-5 py-2 rounded-full font-medium transition-all duration-300";
@@ -27,6 +28,7 @@ const Button = ({
 
   return (
     <button
+      type={type}
       className={`${baseStyles} ${variants[variant]} ${className}`}
       onClick={onClick}
     >
