@@ -2,16 +2,30 @@ import { useState } from "react";
 import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
 import Button from "../common/Button";
 import Logo from "../common/Logo";
+import { useNavigate } from "react-router-dom";
+
 
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Marketplace", path: "/marketplace" },
   { name: "Freelancers", path: "/freelancers" },
-  { name: "Client", path: "/client" },
+  { name: "Recruiters", path: "/recruiters" },
 ];
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+   const handleLogin = () => {
+    setMenuOpen(false);
+    navigate("/login");
+  };
+
+   const handleSignup = () => {
+    setMenuOpen(false);
+    navigate("/join-as");
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-[#FBF6F0] backdrop-blur-md border-b  border-orange-300">
@@ -25,7 +39,7 @@ const Navbar = () => {
           {navLinks.map((link) => (
             <a
               key={link.name}
-              href={link.path}
+              onClick={() => navigate(link.path)}
               className="
               text-gray-700
               font-medium
@@ -46,9 +60,14 @@ const Navbar = () => {
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex items-center gap-4">
-          <Button variant="primary">Login</Button>
-
-          <Button variant="outline">SignUp</Button>
+<Button
+  variant="primary"
+  onClick={handleLogin}
+>
+  Login
+</Button>
+          <Button variant="outline"   onClick={handleSignup}
+>SignUp</Button>
         </div>
 
         {/* Mobile Button */}
@@ -71,8 +90,10 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <a
                 key={link.name}
-                href={link.path}
-                className="text-gray-700 font-medium "
+onClick={() => {
+                  setMenuOpen(false);
+                  navigate(link.path);
+                }}                className="text-gray-700 font-medium "
               >
                 {link.name}
               </a>
@@ -80,8 +101,8 @@ const Navbar = () => {
           </nav>
 
           <div className="flex flex-col items-center gap-5 mt-6">
-            <Button variant="primary">login</Button>
-            <Button variant="outline">SignUp</Button>
+            <Button variant="primary" onClick={handleLogin}>login</Button>
+            <Button variant="outline" onClick={handleSignup}>SignUp</Button>
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ interface ButtonProps {
   className?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+
 }
 
 const Button = ({
@@ -14,9 +16,11 @@ const Button = ({
   className = "",
   onClick,
   type = "button",
+    disabled = false,
+
 }: ButtonProps) => {
   const baseStyles =
-    "px-5 py-2 rounded-full font-medium transition-all duration-300";
+  "px-5 py-2 rounded-full font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
     primary:
@@ -31,6 +35,8 @@ const Button = ({
       type={type}
       className={`${baseStyles} ${variants[variant]} ${className}`}
       onClick={onClick}
+        disabled={disabled}
+ 
     >
       {children}
     </button>

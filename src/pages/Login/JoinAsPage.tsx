@@ -2,21 +2,28 @@ import { useState } from "react";
 import { UserRound, BriefcaseBusiness } from "lucide-react";
 import Button from "../../components/common/Button";
 import Logo from "../../components/common/Logo";
+import { useNavigate } from "react-router-dom";
+
+
 
 const JoinAsPage = () => {
-  const [selectedRole, setSelectedRole] = useState<"client" | "freelancer">(
-    "client"
+  const [selectedRole, setSelectedRole] = useState<"recruiter" | "freelancer" |null>(
+    null
   );
+  const navigate = useNavigate()
+ const handleJoin = () => {
+  if (!selectedRole) {
+    return;
+  }
 
-  const handleJoin = () => {
-    if (selectedRole === "client") {
-      console.log("Joining as Client");
-      // navigate("/signup/client");
-    } else {
-      console.log("Joining as Freelancer");
-      // navigate("/signup/freelancer");
-    }
-  };
+  console.log("Selected role:", selectedRole);
+
+  navigate("/signup", {
+    state: {
+      role: selectedRole,
+    },
+  });
+};
 
   return (
     <main className="min-h-screen bg-[#F9F7F5] flex flex-col items-center px-4 py-8">
@@ -51,7 +58,7 @@ const JoinAsPage = () => {
             mb-10
           "
         >
-          Join as a client or freelancer
+          Join as a Recruiter or  a Freelancer
         </h1>
 
         {/* Role Cards */}
@@ -59,7 +66,7 @@ const JoinAsPage = () => {
           {/* Client */}
           <button
             type="button"
-            onClick={() => setSelectedRole("client")}
+            onClick={() => setSelectedRole("recruiter")}
             className={`
               relative
               text-left
@@ -70,7 +77,7 @@ const JoinAsPage = () => {
               transition-all
               duration-200
               ${
-                selectedRole === "client"
+                selectedRole === "recruiter"
                   ? "border-[#FF7A18] ring-2 ring-[#FF7A18]/20"
                   : "border-gray-400 hover:border-[#FF7A18]"
               }
@@ -90,13 +97,13 @@ const JoinAsPage = () => {
                 items-center
                 justify-center
                 ${
-                  selectedRole === "client"
+                  selectedRole === "recruiter"
                     ? "border-[#FF7A18]"
                     : "border-gray-500"
                 }
               `}
             >
-              {selectedRole === "client" && (
+              {selectedRole === "recruiter" && (
                 <span className="w-2.5 h-2.5 rounded-full bg-[#FF7A18]" />
               )}
             </span>
@@ -104,7 +111,7 @@ const JoinAsPage = () => {
             <UserRound size={22} className="mb-4 text-gray-900" />
 
             <p className="text-base font-medium leading-6 text-gray-900">
-              I'm a client,
+              I'm a Recruiter,
               <br />
               hiring for a
               <br />
@@ -174,10 +181,11 @@ const JoinAsPage = () => {
           <Button
             variant="primary"
             onClick={handleJoin}
+            disabled = {!selectedRole}
             className="px-7 py-2.5"
           >
-            {selectedRole === "client"
-              ? "Join as a Client"
+            {selectedRole === "recruiter"
+              ? "Join as a recruiter"
               : "Join as a Freelancer"}
           </Button>
         </div>

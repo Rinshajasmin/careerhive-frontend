@@ -27,38 +27,21 @@ const LoginPage = () => {
           {/* ================= FORM ================= */}
           <div className="px-7 py-8 sm:px-9 lg:px-8">
             {/* Tabs */}
-            <div className="flex border-b border-gray-400">
-              <button
-                type="button"
-                className="
-                  flex-1
-                  pb-3
-                  text-sm
-                  font-semibold
-                  text-[#FF7A18]
-                  border-b-2
-                  border-[#FF7A18]
-                "
-              >
-                LOGIN
-              </button>
-
-              <button
-                type="button"
-                className="
-                  flex-1
-                  pb-3
-                  text-sm
-                  font-semibold
-                  text-gray-500
-                  hover:text-[#FF7A18]
-                  transition-colors
-                  duration-200
-                "
-              >
-                SIGN UP
-              </button>
-            </div>
+           <div className="border-b border-gray-400">
+  <div
+    className="
+      pb-3
+      text-center
+      text-sm
+      font-semibold
+      text-[#FF7A18]
+      border-b-2
+      border-[#FF7A18]
+    "
+  >
+    LOGIN
+  </div>
+</div>
 
             {/* Form */}
            {/* Form */}

@@ -7,11 +7,17 @@ import ChangePasswordPage from './pages/Login/PasswodChange';
 import OtpPage from './pages/Login/OtpPage';
 import ResetPassword from './pages/Login/ResetPassword';
 import JoinAsPage from './pages/Login/JoinAsPage';
+import AppRouter from "./AppRouter";
+
 
 const App = () => {
   return (
     <div>
-      <HomePage/>
+            
+
+      <AppRouter/>
+
+      {/* <HomePage/> */}
       {/* <Login/> */}
       {/* <SignupPage/> */}
       {/* <ForgotPasswordPage/> */}

@@ -1,4 +1,6 @@
 import type {LucideIcon} from "lucide-react"; 
+import type { ChangeEvent } from "react";
+
 
 type InputFieldProps = {
   id: string;
@@ -6,6 +8,8 @@ type InputFieldProps = {
   placeholder: string;
   type?: string;
   icon: LucideIcon;
+  value?: string;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const InputField = ({
@@ -14,6 +18,8 @@ const InputField = ({
   placeholder,
   type = "text",
   icon: Icon,
+  value,
+  onChange,
 }: InputFieldProps) => {
   return (
     <div>
@@ -40,6 +46,8 @@ const InputField = ({
           id={id}
           type={type}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           className="
             w-full
             h-11

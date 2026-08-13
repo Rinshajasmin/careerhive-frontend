@@ -2,10 +2,29 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../../components/common/Button";
 import Logo from "../../components/common/Logo";
 import loginImage from "../../assets/login.png";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { verifyOtp, resendOtp } from "../../api/authApi";
 const OtpPage = () => {
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const email = location.state?.email;
+  console.log("OTP email:", email);
+  
+  useEffect(() => {
+    if (!email) {
+      navigate("/join-as", { replace: true });
+    }
+  }, [email, navigate]);
+
+  if (!email) {
+    return null;
+  }
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(60);
+  const [success, setSuccess] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -55,14 +74,12 @@ const OtpPage = () => {
     const pastedOtp = e.clipboardData
       .getData("text")
       .replace(/\D/g, "")
-      .slice(0, 4);
-
+      .slice(0, 6);
     if (!pastedOtp) {
       return;
     }
 
-    const updatedOtp = ["", "", "", ""];
-
+    const updatedOtp = ["", "", "", "", "", ""];
     pastedOtp.split("").forEach((digit, index) => {
       updatedOtp[index] = digit;
     });
@@ -70,33 +87,67 @@ const OtpPage = () => {
     setOtp(updatedOtp);
 
     // Focus appropriate input
-    const nextIndex = Math.min(pastedOtp.length, 3);
+    const nextIndex = Math.min(pastedOtp.length, 5);
     inputRefs.current[nextIndex]?.focus();
   };
 
   // ================= SEND AGAIN =================
-  const handleResend = () => {
-    setOtp(["", "", "", ""]);
-    setTimeLeft(60);
-
-    inputRefs.current[0]?.focus();
-
-    // TODO:
-    // Call resend OTP API here
-    console.log("OTP resent");
-  };
-
-  // ================= REGISTER =================
-  const handleRegister = () => {
-    const enteredOtp = otp.join("");
-
-    if (enteredOtp.length !== 4) {
+  const handleResend = async () => {
+    if (!email) {
+      setError("Email not found.");
       return;
     }
 
-    // TODO:
-    // Verify OTP using API here
-    console.log("Entered OTP:", enteredOtp);
+    try {
+      setResendLoading(true);
+      setError("");
+
+      await resendOtp(email);
+
+      setOtp(["", "", "", "", "", ""]);
+      setTimeLeft(60);
+
+      inputRefs.current[0]?.focus();
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to resend OTP.");
+      }
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  // ================= REGISTER =================
+  const handleRegister = async () => {
+    const enteredOtp = otp.join("");
+
+    if (enteredOtp.length !== 6) {
+      setError("Please enter the 6-digit OTP.");
+      return;
+    }
+
+    setError("");
+
+    try {
+      setError("");
+      setSuccess("");
+
+      await verifyOtp(email, enteredOtp);
+
+      setSuccess("Email verified successfully!");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("OTP verification failed.");
+      }
+    }
   };
 
   return (
@@ -181,6 +232,16 @@ const OtpPage = () => {
             >
               OTP has been sent to your Email
             </p>
+            {error && (
+              <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600 text-center">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-600 text-center">
+                {success}
+              </div>
+            )}
 
             {/* Timer */}
             <h2
@@ -193,18 +254,22 @@ const OtpPage = () => {
                 mb-7
               "
             >
-              {`1:${timeLeft.toString().padStart(2, "0")}`}
+              {`${Math.floor(timeLeft / 60)}:${(timeLeft % 60)
+                .toString()
+                .padStart(2, "0")}`}{" "}
             </h2>
 
             {/* ================= OTP INPUTS ================= */}
             <div
               className="
-                flex
-                justify-center
-                gap-3
-                sm:gap-4
-                mb-7
-              "
+    grid
+    grid-cols-6
+    gap-2
+    w-full
+    max-w-[320px]
+    mx-auto
+    mb-7
+  "
             >
               {otp.map((digit, index) => (
                 <input
@@ -221,45 +286,46 @@ const OtpPage = () => {
                   onPaste={handlePaste}
                   aria-label={`OTP digit ${index + 1}`}
                   className="
-                    w-12
-                    h-12
-                    sm:w-14
-                    sm:h-14
-                    rounded-xl
-                    bg-gray-100
-                    border
-                    border-gray-200
-                    text-center
-                    text-lg
-                    font-semibold
-                    text-gray-700
-                    outline-none
-                    focus:border-[#FF7A18]
-                    focus:ring-1
-                    focus:ring-[#FF7A18]/20
-                    transition-all
-                  "
+        w-full
+        aspect-square
+        rounded-xl
+        bg-gray-100
+        border
+        border-gray-200
+        text-center
+        text-lg
+        font-semibold
+        text-gray-700
+        outline-none
+        focus:border-[#FF7A18]
+        focus:ring-1
+        focus:ring-[#FF7A18]/20
+        transition-all
+      "
                 />
               ))}
             </div>
 
-           <div className="flex justify-center mb-4">
-  <Button
-    variant="primary"
-    className="w-[240px] max-w-full h-10 rounded-full"
-  >
-    Send Again
-  </Button>
-</div>
+            <div className="flex justify-center mb-4">
+              <Button
+                variant="primary"
+                className="w-[240px] max-w-full h-10 rounded-full"
+                onClick={handleResend}
+                disabled={resendLoading}
+              >
+                {resendLoading ? "Sending..." : "Send Again"}
+              </Button>
+            </div>
 
-<div className="flex justify-center">
-  <Button
-    variant="primary"
-    className="w-[240px] max-w-full h-10 rounded-full"
-  >
-    Register
-  </Button>
-</div>
+            <div className="flex justify-center">
+              <Button
+                variant="primary"
+                className="w-[240px] max-w-full h-10 rounded-full"
+                onClick={handleRegister}
+              >
+                Register
+              </Button>
+            </div>
           </div>
         </div>
       </div>
