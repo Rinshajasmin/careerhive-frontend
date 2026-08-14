@@ -121,6 +121,10 @@ const OtpPage = () => {
 
   // ================= REGISTER =================
   const handleRegister = async () => {
+    if (timeLeft <= 0) {
+    setError("OTP has expired. Please request a new OTP.");
+    return;
+  }
     const enteredOtp = otp.join("");
 
     if (enteredOtp.length !== 6) {
@@ -244,20 +248,17 @@ const OtpPage = () => {
             )}
 
             {/* Timer */}
-            <h2
-              className="
-                text-2xl
-                sm:text-3xl
-                font-bold
-                text-[#FF4D00]
-                text-center
-                mb-7
-              "
-            >
-              {`${Math.floor(timeLeft / 60)}:${(timeLeft % 60)
-                .toString()
-                .padStart(2, "0")}`}{" "}
-            </h2>
+            {timeLeft > 0 ? (
+  <h2 className="text-2xl sm:text-3xl font-bold text-[#FF4D00] text-center mb-7">
+    {`${Math.floor(timeLeft / 60)}:${(timeLeft % 60)
+      .toString()
+      .padStart(2, "0")}`}
+  </h2>
+) : (
+  <p className="text-xs sm:text-sm font-medium text-red-500 text-center mb-7">
+    OTP expired. Click send again.
+  </p>
+)}
 
             {/* ================= OTP INPUTS ================= */}
             <div
@@ -311,7 +312,7 @@ const OtpPage = () => {
                 variant="primary"
                 className="w-[240px] max-w-full h-10 rounded-full"
                 onClick={handleResend}
-                disabled={resendLoading}
+  disabled={timeLeft > 0 || resendLoading}
               >
                 {resendLoading ? "Sending..." : "Send Again"}
               </Button>
@@ -322,6 +323,8 @@ const OtpPage = () => {
                 variant="primary"
                 className="w-[240px] max-w-full h-10 rounded-full"
                 onClick={handleRegister}
+                  disabled={timeLeft <= 0}
+
               >
                 Register
               </Button>

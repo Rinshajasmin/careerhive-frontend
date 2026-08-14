@@ -1,11 +1,65 @@
 import { Mail, Lock } from "lucide-react";
+import { useState } from "react";
 import Button from "../../components/common/Button";
 import loginImage from "../../assets/login.png";
 import Logo from "../../components/common/Logo";
 import { FcGoogle } from "react-icons/fc";
 import InputField from "../../components/common/InputField";
+import { validateEmail } from "../../utils/validations";
+import { loginUser } from "../../api/authApi";
 
 const LoginPage = () => {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+  email: "",
+  password: "",
+});
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const { id, value } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [id]: value,
+  }));
+};
+const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
+
+  setError("");
+
+  const emailError = validateEmail(formData.email);
+
+  if (emailError) {
+    setError(emailError);
+    return;
+  }
+
+  if (!formData.password) {
+    setError("Password is required.");
+    return;
+  }
+
+  try {
+    const result = await loginUser({
+      email: formData.email.trim(),
+      password: formData.password,
+    });
+
+    console.log("Login successful:", result);
+    console.log("userrole",result.data.user.role)
+  } catch (error) {
+    if (error instanceof Error) {
+      setError(error.message);
+    } else {
+      setError("Login failed. Please try again.");
+    }
+  }
+};
   return (
     <main className="min-h-screen bg-[#F9F6F4] flex flex-col items-center justify-center px-4 py-6">
       {/* Logo */}
@@ -45,7 +99,12 @@ const LoginPage = () => {
 
             {/* Form */}
            {/* Form */}
-<form className="mt-7 space-y-5">
+           {error && (
+  <div className="mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+    {error}
+  </div>
+)}
+<form className="mt-7 space-y-5" onSubmit={handleSubmit}>
 
   {/* Email */}
   <InputField
@@ -54,6 +113,8 @@ const LoginPage = () => {
     placeholder="Please Enter your Email"
     type="email"
     icon={Mail}
+    value={formData.email}
+  onChange={handleChange}
   />
 
   {/* Password */}
@@ -64,6 +125,8 @@ const LoginPage = () => {
       placeholder="Please Enter your Password"
       type="password"
       icon={Lock}
+      value={formData.password}
+  onChange={handleChange}
     />
 
     {/* Forgot Password */}
@@ -83,13 +146,14 @@ const LoginPage = () => {
 
   {/* Login */}
   <div className="pt-1">
-    <Button
-      variant="primary"
-      type="submit"
-      className="w-full h-11 rounded-full"
-    >
-      Login
-    </Button>
+   <Button
+  variant="primary"
+  type="submit"
+  className="w-full h-11 rounded-full"
+  
+>
+  Login
+</Button>
   </div>
 
   {/* Google */}
