@@ -8,6 +8,7 @@ import ChangePasswordPage from "./pages/Login/PasswodChange";
 import OtpPage from "./pages/Login/OtpPage";
 import ResetPassword from "./pages/Login/ResetPassword";
 import JoinAsPage from "./pages/Login/JoinAsPage";
+import GoogleAuthSuccess from "./pages/Login/GoogleAuthSuccess";
 
 const AppRouter = () => {
   return (
@@ -18,6 +19,11 @@ const AppRouter = () => {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/signup" element={<SignupPage />} />
+
+        <Route
+  path="/auth/google/success"
+  element={<GoogleAuthSuccess />}
+/>
 
         <Route
           path="/forgot-password"

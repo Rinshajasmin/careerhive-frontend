@@ -107,6 +107,16 @@ if (formData.password !== formData.confirmPassword) {
     }
   };
 
+  const handleGoogleSignup = () => {
+  if (!role) {
+    setError("Please select a role.");
+    return;
+  }
+
+  window.location.href =
+    `http://localhost:5000/auth/google?role=${role}`;
+};
+
   return (
     <main className="min-h-screen bg-[#F9F6F4] flex flex-col items-center px-4 py-6 sm:py-8">
       {/* Logo */}
@@ -211,6 +221,8 @@ if (formData.password !== formData.confirmPassword) {
               {/* Google */}
               <button
                 type="button"
+                  onClick={handleGoogleSignup}
+
                 className="
                   w-full
                   h-10

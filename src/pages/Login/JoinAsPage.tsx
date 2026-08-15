@@ -15,6 +15,7 @@ const JoinAsPage = () => {
   if (!selectedRole) {
     return;
   }
+  
 
   console.log("Selected role:", selectedRole);
 

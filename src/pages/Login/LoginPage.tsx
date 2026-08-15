@@ -1,12 +1,28 @@
 import { Mail, Lock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
+import { useSearchParams } from "react-router-dom";
 import loginImage from "../../assets/login.png";
 import Logo from "../../components/common/Logo";
 import { FcGoogle } from "react-icons/fc";
 import InputField from "../../components/common/InputField";
 import { validateEmail } from "../../utils/validations";
 import { loginUser } from "../../api/authApi";
+import { AUTH_ERROR_MESSAGES } from "../../constants/auth-errors";
+
+export function getAuthErrorMessage(
+  code: string | null
+): string {
+  if (!code) {
+    return "";
+  }
+
+  return (
+    AUTH_ERROR_MESSAGES[
+      code as keyof typeof AUTH_ERROR_MESSAGES
+    ] || "Authentication failed. Please try again."
+  );
+}
 
 const LoginPage = () => {
   const [error, setError] = useState("");
@@ -15,6 +31,21 @@ const LoginPage = () => {
   email: "",
   password: "",
 });
+const [searchParams] = useSearchParams();
+useEffect(() => {
+  const googleError = searchParams.get("error");
+
+  if (
+    googleError &&
+    googleError in AUTH_ERROR_MESSAGES
+  ) {
+    setError(
+      AUTH_ERROR_MESSAGES[
+        googleError as keyof typeof AUTH_ERROR_MESSAGES
+      ]
+    );
+  }
+}, [searchParams]);
 const handleChange = (
   e: React.ChangeEvent<HTMLInputElement>
 ) => {
@@ -59,6 +90,9 @@ const handleSubmit = async (
       setError("Login failed. Please try again.");
     }
   }
+};
+const handleGoogleLogin = () => {
+  window.location.href = "http://localhost:5000/auth/google";
 };
   return (
     <main className="min-h-screen bg-[#F9F6F4] flex flex-col items-center justify-center px-4 py-6">
@@ -159,7 +193,10 @@ const handleSubmit = async (
   {/* Google */}
   <button
     type="button"
+      onClick={handleGoogleLogin}
+
     className="
+    
       w-full
       h-11
       rounded-full
@@ -178,7 +215,7 @@ const handleSubmit = async (
     "
   >
     <FcGoogle size={18} />
-    <span>Sign up with Google</span>
+    <span>Sign in with Google</span>
   </button>
 
 </form>
