@@ -9,6 +9,12 @@ import InputField from "../../components/common/InputField";
 import { validateEmail } from "../../utils/validations";
 import { loginUser } from "../../api/authApi";
 import { AUTH_ERROR_MESSAGES } from "../../constants/auth-errors";
+import { API_BASE_URL } from "../../constants/api";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { redirectByRole } from "../../utils/redirectByRole";
+
+
 
 export function getAuthErrorMessage(
   code: string | null
@@ -31,6 +37,11 @@ const LoginPage = () => {
   email: "",
   password: "",
 });
+
+const { login } = useAuth();
+const navigate = useNavigate();
+
+
 const [searchParams] = useSearchParams();
 useEffect(() => {
   const googleError = searchParams.get("error");
@@ -80,7 +91,8 @@ const handleSubmit = async (
       email: formData.email.trim(),
       password: formData.password,
     });
-
+    login(result.data.token, result.data.user); // store in context
+    redirectByRole(result.data.user.role, navigate)
     console.log("Login successful:", result);
     console.log("userrole",result.data.user.role)
   } catch (error) {
@@ -92,7 +104,7 @@ const handleSubmit = async (
   }
 };
 const handleGoogleLogin = () => {
-  window.location.href = "http://localhost:5000/auth/google";
+  window.location.href = `${API_BASE_URL}/auth/google`;
 };
   return (
     <main className="min-h-screen bg-[#F9F6F4] flex flex-col items-center justify-center px-4 py-6">

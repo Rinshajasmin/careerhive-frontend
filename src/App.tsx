@@ -8,6 +8,8 @@ import OtpPage from './pages/Login/OtpPage';
 import ResetPassword from './pages/Login/ResetPassword';
 import JoinAsPage from './pages/Login/JoinAsPage';
 import AppRouter from "./AppRouter";
+import { AuthProvider } from "./context/AuthContext";
+
 
 
 const App = () => {
@@ -15,8 +17,9 @@ const App = () => {
     <div>
             
 
-      <AppRouter/>
-
+ <AuthProvider>
+    <AppRouter />
+  </AuthProvider>
       {/* <HomePage/> */}
       {/* <Login/> */}
       {/* <SignupPage/> */}

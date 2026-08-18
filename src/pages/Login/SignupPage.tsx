@@ -2,7 +2,7 @@ import { User, Mail, Lock } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { API_BASE_URL } from "../../constants/api";
 import Button from "../../components/common/Button";
 import loginImage from "../../assets/login.png";
 import Logo from "../../components/common/Logo";
@@ -114,7 +114,7 @@ if (formData.password !== formData.confirmPassword) {
   }
 
   window.location.href =
-    `http://localhost:5000/auth/google?role=${role}`;
+    `${API_BASE_URL}/auth/google?role=${role}`;
 };
 
   return (

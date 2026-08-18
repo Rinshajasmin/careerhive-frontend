@@ -1,5 +1,4 @@
-const API_URL = "http://localhost:5000";
-
+import { API_BASE_URL } from "../constants/api";
 export interface RegisterData {
   userName: string;
   email: string;
@@ -8,7 +7,7 @@ export interface RegisterData {
 }
 
 export const registerUser = async (data: RegisterData) => {
-  const response = await fetch(`${API_URL}/auth/register`, {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +29,7 @@ export const verifyOtp = async (
   email: string,
   otp: string
 ) => {
-  const response = await fetch(`${API_URL}/auth/verify-otp`, {
+  const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -51,7 +50,7 @@ export const verifyOtp = async (
 };
 
 export const resendOtp = async (email: string) => {
-  const response = await fetch(`${API_URL}/auth/resend-otp`, {
+  const response = await fetch(`${API_BASE_URL}/auth/resend-otp`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -75,7 +74,7 @@ export interface LoginData {
 }
 
 export const loginUser = async (data: LoginData) => {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
