@@ -1,7 +1,7 @@
 import { Mail, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import loginImage from "../../assets/login.png";
 import Logo from "../../components/common/Logo";
 import { FcGoogle } from "react-icons/fc";
@@ -11,8 +11,8 @@ import { loginUser } from "../../api/authApi";
 import { AUTH_ERROR_MESSAGES } from "../../constants/auth-errors";
 import { API_BASE_URL } from "../../constants/api";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { redirectByRole } from "../../utils/redirectByRole";
+
+
 
 
 
@@ -31,6 +31,9 @@ export function getAuthErrorMessage(
 }
 
 const LoginPage = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -38,8 +41,6 @@ const LoginPage = () => {
   password: "",
 });
 
-const { login } = useAuth();
-const navigate = useNavigate();
 
 
 const [searchParams] = useSearchParams();
@@ -71,6 +72,7 @@ const handleSubmit = async (
   e: React.FormEvent<HTMLFormElement>
 ) => {
   e.preventDefault();
+    console.log("LOGIN BUTTON CLICKED");
 
   setError("");
 
@@ -91,10 +93,16 @@ const handleSubmit = async (
       email: formData.email.trim(),
       password: formData.password,
     });
-    login(result.data.token, result.data.user); // store in context
-    redirectByRole(result.data.user.role, navigate)
-    console.log("Login successful:", result);
-    console.log("userrole",result.data.user.role)
+    
+    
+   login(result.data.token, result.data.user);
+   console.log("AUTHENTICATED USER:", result.data.user);
+console.log("AUTHENTICATED ROLE:", result.data.user.role);
+if (result.data.user.role === "freelancer") {
+    navigate("/freelancer/dashboard", { replace: true });
+  } else if (result.data.user.role === "recruiter") {
+    navigate("/recruiter/dashboard", { replace: true });
+  }
   } catch (error) {
     if (error instanceof Error) {
       setError(error.message);

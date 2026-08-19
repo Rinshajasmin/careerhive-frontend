@@ -73,7 +73,31 @@ export interface LoginData {
   password: string;
 }
 
+// export const loginUser = async (data: LoginData) => {
+//   const response = await fetch(`${API_BASE_URL}/auth/login`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//   });
+
+//   const result = await response.json();
+
+//   if (!response.ok) {
+//   console.log("LOGIN ERROR STATUS:", response.status);
+//   console.log("LOGIN ERROR RESPONSE:", result);
+
+//   throw new Error(result.message || "Login failed");
+//   }
+
+//   return result;
+// };
+
 export const loginUser = async (data: LoginData) => {
+  console.log("LOGIN API CALLED");
+  console.log("LOGIN DATA:", data);
+
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
@@ -82,8 +106,14 @@ export const loginUser = async (data: LoginData) => {
     body: JSON.stringify(data),
   });
 
+  console.log("LOGIN RESPONSE STATUS:", response.status);
+
   const result = await response.json();
 
+console.log(
+  "LOGIN DATA STRUCTURE:",
+  JSON.stringify(result.data, null, 2)
+);
   if (!response.ok) {
     throw new Error(result.message || "Login failed");
   }
